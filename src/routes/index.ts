@@ -1,11 +1,9 @@
 import { Router } from 'express';
-import userRoutes from './user.routes';
-import authRoutes from './auth.routes';
+import v1Routes from './v1';
 
 const router = Router();
 
-// Define routes with their respective prefixes
-router.use('/users', userRoutes);
-router.use('/auth', authRoutes);
+// API versioning
+router.use('/v1', v1Routes);
 
 export default router;

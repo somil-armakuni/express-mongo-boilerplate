@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
-import { userService } from "../services/user.service"; // Import the userService
+import { userService } from "../../services/user.service"; // Import the userService
+import { errorResponse, successResponse } from "../../utils/response.util";
 
 export const getUserById = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -19,24 +20,29 @@ export const getUserById = async (req: Request, res: Response) => {
 };
 
 export const createUser = async (req: Request, res: Response) => {
-  const { name, email, password } = req.body;
+  const { name, email, role } = req.body;
 
   try {
-    const newUser = await userService.createUser({ name, email, password });
-    res.status(201).json(newUser);
+    const user = await userService.getUserByEmail(email);
+
+    if (user) {
+      res.status(400).json({ error: "User already exists." });
+    } else {
+      const newUser = await userService.createUser({ name, email, role });
+      res.status(201).json(newUser);
+    }
   } catch (error) {
-    console.error("Error creating user:", error);
-    res.status(500).json({ error: "Failed to create user" });
+    errorResponse(res, "Failed to create user", 500)
   }
 };
 
 export const updateUser = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { name, email, password } = req.body;
+  const { name, email, role } = req.body;
 
   try {
-    const updatedUser = await userService.updateUser(id, { name, email, password });
-    
+    const updatedUser = await userService.updateUser(id, { name, email, role });
+
     if (!updatedUser) {
       res.status(404).json({ error: "User not found" });
     }

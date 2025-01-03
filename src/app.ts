@@ -2,12 +2,11 @@ import express, { Application } from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 import { json, urlencoded } from 'body-parser';
-import userRoutes from './routes/user.routes';
 import prisma from './config/prisma-client';
+import routes from './routes';
 import { requestLogger } from './middleware/request-logger';
 
 const app: Application = express();
-
 
 // Test Prisma connection to MongoDB
 (async () => {
@@ -28,7 +27,7 @@ app.use(urlencoded({ extended: true })); // Parse URL-encoded payloads
 app.use(express.json());
 
 // Routes
-app.use('/users', userRoutes);
+app.use('/api', routes);
 
 // 404 Handler
 app.use((req, res) => {

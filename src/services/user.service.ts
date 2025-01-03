@@ -1,16 +1,23 @@
-import prisma from "../config/prisma-client"; // Import Prisma client for DB interaction
+import { Role } from "@prisma/client";
 
+import prisma from "../config/prisma-client"; // Import Prisma client for DB interaction
 interface User {
   id?: string;
-  name: string;
+  name?: string;
   email: string;
-  password: string;
+  role: Role;
 }
 
 export const userService = {
   async getUserById(id: string) {
     return prisma.user.findUnique({
       where: { id },
+    });
+  },
+
+  async getUserByEmail(email: string) {
+    return prisma.user.findUnique({
+      where: { email },
     });
   },
 
